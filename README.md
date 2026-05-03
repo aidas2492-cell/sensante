@@ -11,3 +11,4 @@ grippe , typhoide ) a partir des symptomes du patient .
 - ` frontend / ` : Interface web
 - ` notebooks / ` : Scripts d'exploration
 ## Auteur
+Sokhna Aichatou Sy L2

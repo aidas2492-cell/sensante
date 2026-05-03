@@ -11,4 +11,6 @@ models /*. pkl
 Thumbs . db
 # IDE
 . vscode /
-. idea /
+. idea /"# Fichiers temporaires matplotlib" 
+"*.png" 
+"!figures/*.png" 
