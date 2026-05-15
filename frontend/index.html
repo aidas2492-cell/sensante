@@ -225,6 +225,7 @@ function afficherResultat(r) {
             </div>
         </div>
     `;
+demanderExplication(r);
 }
 
 function afficherErreur(msg) {
@@ -237,6 +238,44 @@ function afficherErreur(msg) {
             </p>
         </div>
     `;
+}
+async function demanderExplication(diagnostic_data) {
+    const explainData = {
+        diagnostic: diagnostic_data.diagnostic,
+        probabilite: diagnostic_data.probabilite,
+        age: parseInt(document.getElementById("age").value),
+        sexe: document.querySelector('input[name="sexe"]:checked')?.value || "M",
+        temperature: parseFloat(document.getElementById("temperature").value),
+        region: document.getElementById("region").value
+    };
+
+    const section = document.getElementById("result-section");
+    const explDiv = document.createElement("div");
+    explDiv.id = "explication-zone";
+    explDiv.innerHTML = `<div class="mt-4 bg-purple-50 rounded-lg p-4 border border-purple-200">
+        <p class="text-sm text-purple-600 font-medium mb-2">💊 Explication (Llama 3)</p>
+        <p class="text-gray-500 text-sm">🔄 Génération en cours...</p>
+    </div>`;
+    section.querySelector(".bg-white").appendChild(explDiv);
+
+    try {
+        const response = await fetch("http://localhost:8000/explain", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(explainData)
+        });
+        if (response.ok) {
+            const result = await response.json();
+            explDiv.innerHTML = `<div class="mt-4 bg-purple-50 rounded-lg p-4 border border-purple-200">
+                <p class="text-sm text-purple-600 font-medium mb-2">💊 Explication (Llama 3)</p>
+                <p class="text-gray-700 text-sm leading-relaxed">${result.explication}</p>
+            </div>`;
+        }
+    } catch (error) {
+        explDiv.innerHTML = `<div class="mt-4 bg-gray-50 rounded-lg p-3">
+            <p class="text-gray-400 text-sm">⚠️ Explication non disponible</p>
+        </div>`;
+    }
 }
     </script>
 </body>
