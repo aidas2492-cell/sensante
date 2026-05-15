@@ -166,3 +166,42 @@ print(f"Diagnostic prédit: {prediction}")
 print(f"Probabilités:")
 for classe, prob in zip(model_loaded.classes_, probabilites):
     print(f"  {classe}: {prob:.1%}")
+    #Exercice1
+    # Importance des features
+importances = model.feature_importances_
+print("\n--- Importance des features ---")
+for name, imp in sorted(zip(feature_cols, importances), 
+                        key=lambda x: x[1], reverse=True):
+    print(f"  {name:20s} : {imp:.3f}")
+    #Exercice2
+    # Créer plusieurs patients fictifs
+patients_test = [
+    {
+        'nom': 'jeune_sain',
+        'age': 22, 'sexe': 'M', 'temperature': 36.5, 'tension_sys': 115,
+        'toux': False, 'fatigue': False, 'maux_tete': False, 'region': 'Dakar'
+    },
+    {
+        'nom': 'forte_fievre',
+        'age': 35, 'sexe': 'F', 'temperature': 40.0, 'tension_sys': 100,
+        'toux': True, 'fatigue': True, 'maux_tete': True, 'region': 'Thies'
+    },
+    {
+        'nom': 'age_toux',
+        'age': 65, 'sexe': 'M', 'temperature': 38.0, 'tension_sys': 130,
+        'toux': True, 'fatigue': False, 'maux_tete': False, 'region': 'Dakar'
+    }
+]
+
+print("\n--- Prédictions pour différents patients ---")
+for patient in patients_test:
+    sexe_enc = le_sexe_loaded.transform([patient['sexe']])[0]
+    region_enc = le_region_loaded.transform([patient['region']])[0]
+    features = [
+        patient['age'], sexe_enc, patient['temperature'],
+        patient['tension_sys'], int(patient['toux']), int(patient['fatigue']),
+        int(patient['maux_tete']), region_enc
+    ]
+    pred = model_loaded.predict([features])[0]
+    prob = max(model_loaded.predict_proba([features])[0])
+    print(f"{patient['nom']}: {pred} (confiance: {prob:.1%})")
