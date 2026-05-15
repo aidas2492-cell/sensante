@@ -3,6 +3,7 @@
 
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
+from fastapi.middleware.cors import CORSMiddleware
 
 # --- Schemas Pydantic ---
 
@@ -31,6 +32,15 @@ app = FastAPI(
     version="0.2.0"
 )
 
+
+# Après avoir créé l'application 'app'
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # En développement : tout accepter
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Route de base : verifier que l'API fonctionne
 @app.get("/health")
 @app.post("/predict", response_model=DiagnosticOutput)
